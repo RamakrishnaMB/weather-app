@@ -57,8 +57,7 @@ const WeatherComponent: React.FC = () => {
                             <TableHead>
                                 <TableRow>
                                     <TableCell>Time</TableCell>
-                                    <TableCell>Icon</TableCell>
-                                    <TableCell>Temperature (&#176;C / &#176;F)</TableCell>
+                                    <TableCell>Icon & Temperature (&#176;C / &#176;F)</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
@@ -67,9 +66,7 @@ const WeatherComponent: React.FC = () => {
                                         <TableRow key={hour.time}>
                                             <TableCell>{hour.time}</TableCell>
                                             <TableCell>
-                                                <img src={hour.condition.icon} alt={hour.condition.text} style={{ maxWidth: '50px' }} />
-                                            </TableCell>
-                                            <TableCell>
+                                                <img src={hour.condition.icon} alt={hour.condition.text} style={{ maxWidth: '50px', marginRight: '10px' }} />
                                                 {hour.temp_c}&#176;C / {hour.temp_f}&#176;F
                                             </TableCell>
                                         </TableRow>
