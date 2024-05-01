@@ -60,7 +60,7 @@ const WeatherComponent: React.FC = () => {
 
     const formatTime = (time: string) => {
         const date = new Date(time);
-        return date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+        return date.toLocaleString('en-US', { hour: 'numeric', hour12: true });
     };
 
     return (
@@ -80,7 +80,7 @@ const WeatherComponent: React.FC = () => {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {data.forecast.forecastday.find(forecast => forecast.date === date)?.hour.map(hour => (
+                                        {data.forecast.forecastday.find(forecast => forecast.date === date)?.hour.filter((hour, index) => index % 3 === 0).map(hour => (
                                             <TableRow key={hour.time}>
                                                 <TableCell>{formatTime(hour.time)}</TableCell>
                                                 <TableCell>
