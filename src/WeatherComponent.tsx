@@ -9,6 +9,9 @@ import {
     TableHead,
     TableRow,
     TextField,
+    Select,
+    MenuItem,
+    SelectChangeEvent,
 } from '@mui/material';
 
 interface WeatherData {
@@ -34,6 +37,7 @@ interface WeatherData {
 const WeatherComponent: React.FC = () => {
     const [data, setData] = useState<{ date: string; countries: { country: string; data: WeatherData }[] }[]>([]);
     const [filterDate, setFilterDate] = useState<string>('');
+    const [filterCountry, setFilterCountry] = useState<string>('');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -88,6 +92,10 @@ const WeatherComponent: React.FC = () => {
         setFilterDate(event.target.value);
     };
 
+    const handleCountryFilterChange = (event: SelectChangeEvent<{ value: unknown }>) => {
+        setFilterCountry(event.target.value as string);
+    };
+
     const getMinDate = (): string => {
         const today = new Date();
         const lastSevenDays = new Date(today);
@@ -99,6 +107,7 @@ const WeatherComponent: React.FC = () => {
         const today = new Date();
         return today.toISOString().split('T')[0]; // Get today's date
     };
+
     return (
         <div style={{ margin: '30px' }}>
             <div>
@@ -117,40 +126,56 @@ const WeatherComponent: React.FC = () => {
                     sx={{ mb: 2 }}
                     variant="outlined"
                 />
+                <Select
+                    value={filterCountry as ""}
+                    onChange={handleCountryFilterChange}
+                    displayEmpty
+                    sx={{ mb: 2 }}
+                    variant="outlined"
+                >
+                    <MenuItem value="">
+                        Select Country
+                    </MenuItem>
+                    <MenuItem value="Indonesia">Indonesia</MenuItem>
+                    <MenuItem value="Malaysia">Malaysia</MenuItem>
+                    <MenuItem value="Singapore">Singapore</MenuItem>
+                </Select>
             </div>
 
             {data.map(({ date, countries }) => (
                 <div key={date}>
-                    {(!filterDate || date === filterDate) && (
+                    {(!filterDate || date === filterDate) && (!filterCountry || countries.some(({ country: countryData }) => countryData === filterCountry)) && (
                         <>
                             <Typography variant="h6" gutterBottom>{date}</Typography>
-                            {countries.map(({ country, data }) => (
-                                <Paper key={`${country}-${date}`} sx={{ mb: 2 }}>
-                                    <TableContainer component={Paper}>
-                                        <Table>
-                                            <TableHead>
-                                                <TableRow>
-                                                    <TableCell>Country</TableCell>
-                                                    {data.forecast.forecastday.find(forecast => forecast.date === date)?.hour.filter((hour, index) => index % 3 === 0).map(hour => (
-                                                        <TableCell key={hour.time}>{formatTime(hour.time)}</TableCell>
-                                                    ))}
-                                                </TableRow>
-                                            </TableHead>
-                                            <TableBody>
-                                                <TableRow>
-                                                    <TableCell>{country}</TableCell>
-                                                    {data.forecast.forecastday.find(forecast => forecast.date === date)?.hour.filter((hour, index) => index % 3 === 0).map(hour => (
-                                                        <TableCell key={hour.time}>
-                                                            <img src={hour.condition.icon} alt={hour.condition.text} style={{ maxWidth: '50px', marginRight: '10px' }} />
-                                                            {hour.temp_c}&#176;C / {hour.temp_f}&#176;F
-                                                        </TableCell>
-                                                    ))}
-                                                </TableRow>
-                                            </TableBody>
-                                        </Table>
-                                    </TableContainer>
-                                </Paper>
-                            ))}
+                            {countries
+                                .filter(({ country: countryData }) => !filterCountry || countryData === filterCountry)
+                                .map(({ country, data }) => (
+                                    <Paper key={`${country}-${date}`} sx={{ mb: 2 }}>
+                                        <TableContainer component={Paper}>
+                                            <Table>
+                                                <TableHead>
+                                                    <TableRow>
+                                                        <TableCell>Country</TableCell>
+                                                        {data.forecast.forecastday.find(forecast => forecast.date === date)?.hour.filter((hour, index) => index % 3 === 0).map(hour => (
+                                                            <TableCell key={hour.time}>{formatTime(hour.time)}</TableCell>
+                                                        ))}
+                                                    </TableRow>
+                                                </TableHead>
+                                                <TableBody>
+                                                    <TableRow>
+                                                        <TableCell>{country}</TableCell>
+                                                        {data.forecast.forecastday.find(forecast => forecast.date === date)?.hour.filter((hour, index) => index % 3 === 0).map(hour => (
+                                                            <TableCell key={hour.time}>
+                                                                <img src={hour.condition.icon} alt={hour.condition.text} style={{ maxWidth: '50px', marginRight: '10px' }} />
+                                                                {hour.temp_c}&#176;C / {hour.temp_f}&#176;F
+                                                            </TableCell>
+                                                        ))}
+                                                    </TableRow>
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
+                                    </Paper>
+                                ))}
                         </>
                     )}
                 </div>
