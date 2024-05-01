@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {readAllJsonFiles} from "./utilities/fileUtils";
-
+import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
 interface WeatherData {
     location: {
@@ -28,10 +28,7 @@ const WeatherComponent: React.FC = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // Fetch the list of JSON files from the metadata file
                 const fileList = await fetch('/weatherdata/files.json').then(response => response.json());
-
-                // Fetch and parse each JSON file and include country and date information
                 const fileContents = await Promise.all(
                     fileList.map(async (fileName: string) => {
                         const response = await fetch(`/weatherdata/${fileName}`);
@@ -41,7 +38,6 @@ const WeatherComponent: React.FC = () => {
                         return { country, date, data: jsonData };
                     })
                 );
-
                 setData(fileContents);
             } catch (error) {
                 console.error('Error reading JSON files:', error);
@@ -54,32 +50,34 @@ const WeatherComponent: React.FC = () => {
     return (
         <div>
             {data.map(item => (
-                <div key={`${item.country}-${item.date}`}>
-                    <h2>{item.date}</h2>
-                    <h3>Country: {item.country}</h3>
-                    <table>
-                        <thead>
-                        <tr>
-                            <th>Time</th>
-                            <th>Icon</th>
-                            <th>Temperature (&#176;C / &#176;F)</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {item.data.forecast.forecastday[0].hour.map(hour => (
-                            <tr key={hour.time}>
-                                <td>{hour.time}</td>
-                                <td>
-                                    <img src={hour.condition.icon} alt={hour.condition.text} />
-                                </td>
-                                <td>
-                                    {hour.temp_c}&#176;C / {hour.temp_f}&#176;F
-                                </td>
-                            </tr>
-                        ))}
-                        </tbody>
-                    </table>
-                </div>
+                <Paper key={`${item.country}-${item.date}`} style={{ marginBottom: '20px', padding: '20px' }}>
+                    <Typography variant="h5">{item.date}</Typography>
+                    <Typography variant="subtitle1">Country: {item.country}</Typography>
+                    <TableContainer component={Paper} style={{ marginTop: '20px' }}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Time</TableCell>
+                                    <TableCell>Icon</TableCell>
+                                    <TableCell>Temperature (&#176;C / &#176;F)</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {item.data.forecast.forecastday[0].hour.map(hour => (
+                                    <TableRow key={hour.time}>
+                                        <TableCell>{hour.time}</TableCell>
+                                        <TableCell>
+                                            <img src={hour.condition.icon} alt={hour.condition.text} style={{ maxWidth: '50px' }} />
+                                        </TableCell>
+                                        <TableCell>
+                                            {hour.temp_c}&#176;C / {hour.temp_f}&#176;F
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Paper>
             ))}
         </div>
     );
