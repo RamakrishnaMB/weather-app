@@ -1,0 +1,11 @@
+# Ignore everything
+build/
+node_modules/
+npm-debug.log
+ 
+# Ignore unnecessary files inside allowed directories
+# This should go after the allowed directories
+**/*~
+**/*.log
+**/.DS_Store
+**/Thumbs.db
