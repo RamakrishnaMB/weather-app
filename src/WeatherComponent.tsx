@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
     Typography,
     Paper,
@@ -12,8 +12,10 @@ import {
     Select,
     MenuItem,
     SelectChangeEvent,
+    Button
 } from '@mui/material';
 
+// Define the structure of the weather data
 interface WeatherData {
     location: {
         country: string;
@@ -34,22 +36,28 @@ interface WeatherData {
     };
 }
 
+// WeatherComponent functional component
 const WeatherComponent: React.FC = () => {
+    // State variables to manage data and filters
     const [data, setData] = useState<{ date: string; countries: { country: string; data: WeatherData }[] }[]>([]);
     const [filterDate, setFilterDate] = useState<string>('');
     const [filterCountry, setFilterCountry] = useState<string>('');
 
+    // Fetch data when component mounts
     useEffect(() => {
         const fetchData = async () => {
             try {
+                // Fetch file list from server
                 const fileList = await fetch('/weatherdata/files.json').then(response => response.json());
+                // Fetch content of each file and store it in fileContents
                 const fileContents = await Promise.all(
                     fileList.map(async (fileName: string) => {
                         const response = await fetch(`/weatherdata/${fileName}`);
                         const jsonData = await response.json();
                         const country = jsonData.location.country;
-                        const date: string = jsonData.forecast.forecastday[0].date; // Specify the type of date as string
-                        return { country, data: jsonData, date };
+                        // Get the date of the first forecast day
+                        const date: string = jsonData.forecast.forecastday[0].date;
+                        return {country, data: jsonData, date};
                     })
                 );
 
@@ -57,8 +65,8 @@ const WeatherComponent: React.FC = () => {
                 const groupedData: {
                     [key: string]: { date: string; countries: { country: string; data: WeatherData }[] }
                 } = {};
-                fileContents.forEach(({ country, data}) => {
-                    data.forecast.forecastday.forEach(({ date: forecastDate}: {
+                fileContents.forEach(({country, data}) => {
+                    data.forecast.forecastday.forEach(({date: forecastDate}: {
                         date: string;
                         hour: {
                             time: string;
@@ -66,11 +74,11 @@ const WeatherComponent: React.FC = () => {
                             temp_c: number;
                             temp_f: number;
                         }[]
-                    }) => { // Specify the type of date and hour
-                        if (!groupedData[forecastDate]) { // Change variable name from date to forecastDate
-                            groupedData[forecastDate] = { date: forecastDate, countries: [] }; // Change variable name from date to forecastDate
+                    }) => {
+                        if (!groupedData[forecastDate]) {
+                            groupedData[forecastDate] = {date: forecastDate, countries: []};
                         }
-                        groupedData[forecastDate].countries.push({ country, data });
+                        groupedData[forecastDate].countries.push({country, data});
                     });
                 });
 
@@ -83,19 +91,24 @@ const WeatherComponent: React.FC = () => {
         fetchData();
     }, []);
 
-    const formatTime = (time: string) => {
-        const date = new Date(time);
-        return date.toLocaleString('en-US', { hour: 'numeric', hour12: true });
-    };
-
+    // Function to format time
+// Event handler for date filter change
     const handleDateFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setFilterDate(event.target.value);
     };
 
+    // Event handler for country filter change
     const handleCountryFilterChange = (event: SelectChangeEvent<{ value: unknown }>) => {
         setFilterCountry(event.target.value as string);
     };
 
+    // Event handler to clear filters
+    const handleClearFilter = () => {
+        setFilterDate('');
+        setFilterCountry('');
+    };
+
+    // Function to get the minimum date for date filter
     const getMinDate = (): string => {
         const today = new Date();
         const lastSevenDays = new Date(today);
@@ -103,14 +116,17 @@ const WeatherComponent: React.FC = () => {
         return lastSevenDays.toISOString().split('T')[0];
     };
 
+    // Function to get the maximum date for date filter
     const getMaxDate = (): string => {
         const today = new Date();
         return today.toISOString().split('T')[0]; // Get today's date
     };
 
+    // JSX structure of the component
     return (
-        <div style={{ margin: '30px' }}>
+        <div style={{margin: '30px'}}>
             <div>
+                {/* Text field for date filter */}
                 <TextField
                     label="Filter by Last 7 Days"
                     type="date"
@@ -123,14 +139,15 @@ const WeatherComponent: React.FC = () => {
                         min: getMinDate(),
                         max: getMaxDate(),
                     }}
-                    sx={{ mb: 2 }}
+                    sx={{mb: 2, marginRight: '10px'}}
                     variant="outlined"
                 />
+                {/* Select dropdown for country filter */}
                 <Select
                     value={filterCountry as ""}
                     onChange={handleCountryFilterChange}
                     displayEmpty
-                    sx={{ mb: 2 }}
+                    sx={{mb: 2, marginRight: '10px'}}
                     variant="outlined"
                 >
                     <MenuItem value="">
@@ -140,42 +157,65 @@ const WeatherComponent: React.FC = () => {
                     <MenuItem value="Malaysia">Malaysia</MenuItem>
                     <MenuItem value="Singapore">Singapore</MenuItem>
                 </Select>
+                {/* Button to clear filters */}
+                <Button variant="outlined" sx={{mb: 2, marginRight: '10px', backgroundColor: '#3073d1', color: 'white'}}
+                        onClick={handleClearFilter}>Clear</Button>
             </div>
 
-            {data.map(({ date, countries }) => (
+            {/* Render data */}
+            {data.map(({date, countries}) => (
                 <div key={date}>
-                    {(!filterDate || date === filterDate) && (!filterCountry || countries.some(({ country: countryData }) => countryData === filterCountry)) && (
+                    {(!filterDate || date === filterDate) && (!filterCountry || countries.some(({country: countryData}) => countryData === filterCountry)) && (
                         <>
                             <Typography variant="h6" gutterBottom>{date}</Typography>
-                            {countries
-                                .filter(({ country: countryData }) => !filterCountry || countryData === filterCountry)
-                                .map(({ country, data }) => (
-                                    <Paper key={`${country}-${date}`} sx={{ mb: 2 }}>
-                                        <TableContainer component={Paper}>
-                                            <Table>
-                                                <TableHead>
+                            <Paper sx={{mb: 2}}>
+                                <TableContainer component={Paper}>
+                                    <Table>
+                                        <TableHead>
+                                            <TableRow>
+                                                <TableCell align="center">Country</TableCell>
+                                                <TableCell align="center">12 AM</TableCell>
+                                                <TableCell align="center">3 AM</TableCell>
+                                                <TableCell align="center">6 AM</TableCell>
+                                                <TableCell align="center">9 AM</TableCell>
+                                                <TableCell align="center">12 PM</TableCell>
+                                                <TableCell align="center">3 PM</TableCell>
+                                                <TableCell align="center">6 PM</TableCell>
+                                                <TableCell align="center">9 PM</TableCell>
+                                            </TableRow>
+                                        </TableHead>
+                                        {countries
+                                            .filter(({country: countryData}) => !filterCountry || countryData === filterCountry)
+                                            .map(({country, data}) => (
+                                                <TableBody key={country}>
                                                     <TableRow>
-                                                        <TableCell>Country</TableCell>
+                                                        <TableCell align="center">{country}</TableCell>
                                                         {data.forecast.forecastday.find(forecast => forecast.date === date)?.hour.filter((hour, index) => index % 3 === 0).map(hour => (
-                                                            <TableCell key={hour.time}>{formatTime(hour.time)}</TableCell>
-                                                        ))}
-                                                    </TableRow>
-                                                </TableHead>
-                                                <TableBody>
-                                                    <TableRow>
-                                                        <TableCell>{country}</TableCell>
-                                                        {data.forecast.forecastday.find(forecast => forecast.date === date)?.hour.filter((hour, index) => index % 3 === 0).map(hour => (
-                                                            <TableCell key={hour.time}>
-                                                                <img src={hour.condition.icon} alt={hour.condition.text} style={{ maxWidth: '50px', marginRight: '10px' }} />
-                                                                {hour.temp_c}&#176;C / {hour.temp_f}&#176;F
+                                                            <TableCell key={hour.time} align="center">
+                                                                <div style={{
+                                                                    display: 'flex',
+                                                                    flexDirection: 'column',
+                                                                    alignItems: 'center'
+                                                                }}>
+                                                                    <div style={{marginBottom: '5px'}}>
+                                                                        <img src={hour.condition.icon}
+                                                                             alt={hour.condition.text}
+                                                                             style={{maxWidth: '50px'}}/>
+                                                                    </div>
+                                                                    <div>
+                                                                        {hour.temp_c}&#176;C / {hour.temp_f}&#176;F
+                                                                    </div>
+                                                                </div>
                                                             </TableCell>
+
                                                         ))}
                                                     </TableRow>
                                                 </TableBody>
-                                            </Table>
-                                        </TableContainer>
-                                    </Paper>
-                                ))}
+                                            ))}
+                                    </Table>
+                                </TableContainer>
+                            </Paper>
+
                         </>
                     )}
                 </div>
