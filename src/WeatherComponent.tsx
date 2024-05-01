@@ -77,7 +77,7 @@ const WeatherComponent: React.FC = () => {
         <div>
             {data.map(({date, countries}) => (
                 <div key={date}>
-                    <Typography variant="h5">{date}</Typography>
+                    <Typography variant="h6">{date}</Typography>
                     {countries.map(({country, data}) => (
                         <Paper key={`${country}-${date}`} style={{marginBottom: '20px', padding: '20px'}}>
                             <TableContainer component={Paper} style={{marginTop: '20px'}}>

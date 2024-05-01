@@ -1,5 +1,4 @@
 import React from 'react';
-import './App.css';
 import WeatherComponent from "./WeatherComponent";
 import { Typography } from '@mui/material';
 
