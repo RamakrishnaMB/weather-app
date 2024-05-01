@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-import {readAllJsonFiles} from "./utilities/fileUtils";
 import { Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
 interface WeatherData {
@@ -63,16 +62,18 @@ const WeatherComponent: React.FC = () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {item.data.forecast.forecastday[0].hour.map(hour => (
-                                    <TableRow key={hour.time}>
-                                        <TableCell>{hour.time}</TableCell>
-                                        <TableCell>
-                                            <img src={hour.condition.icon} alt={hour.condition.text} style={{ maxWidth: '50px' }} />
-                                        </TableCell>
-                                        <TableCell>
-                                            {hour.temp_c}&#176;C / {hour.temp_f}&#176;F
-                                        </TableCell>
-                                    </TableRow>
+                                {item.data.forecast.forecastday.map(forecast => (
+                                    forecast.hour.map(hour => (
+                                        <TableRow key={hour.time}>
+                                            <TableCell>{hour.time}</TableCell>
+                                            <TableCell>
+                                                <img src={hour.condition.icon} alt={hour.condition.text} style={{ maxWidth: '50px' }} />
+                                            </TableCell>
+                                            <TableCell>
+                                                {hour.temp_c}&#176;C / {hour.temp_f}&#176;F
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
                                 ))}
                             </TableBody>
                         </Table>
