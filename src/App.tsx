@@ -1,12 +1,13 @@
 import React from 'react';
 import './App.css';
-import LoadJsonWeather from "./LoadJsonWeather";
+import WeatherComponent from "./WeatherComponent";
 
 function App() {
   return (
-    <div className="App">
-     <LoadJsonWeather/>
-    </div>
+      <div>
+          <h1>Weather Forecast</h1>
+          <WeatherComponent />
+      </div>
   );
 }
 
