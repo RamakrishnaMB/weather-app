@@ -109,15 +109,15 @@ const WeatherComponent: React.FC = () => {
     };
 
     // Function to get the minimum date for date filter
-    const getMinDate = (): string => {
+    const getMaxDate = (): string => {
         const today = new Date();
         const lastSevenDays = new Date(today);
-        lastSevenDays.setDate(lastSevenDays.getDate() - 6); // Subtract 6 days to get the last 7 days
+        lastSevenDays.setDate(lastSevenDays.getDate() + 6); // Subtract 6 days to get the last 7 days
         return lastSevenDays.toISOString().split('T')[0];
     };
 
     // Function to get the maximum date for date filter
-    const getMaxDate = (): string => {
+    const getMinDate = (): string => {
         const today = new Date();
         return today.toISOString().split('T')[0]; // Get today's date
     };
