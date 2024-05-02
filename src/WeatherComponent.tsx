@@ -128,7 +128,7 @@ const WeatherComponent: React.FC = () => {
             <div>
                 {/* Text field for date filter */}
                 <TextField
-                    label="Filter by Last 7 Days"
+                    label="Select Forecast Date"
                     type="date"
                     value={filterDate}
                     onChange={handleDateFilterChange}
@@ -156,6 +156,7 @@ const WeatherComponent: React.FC = () => {
                     <MenuItem value="Indonesia">Indonesia</MenuItem>
                     <MenuItem value="Malaysia">Malaysia</MenuItem>
                     <MenuItem value="Singapore">Singapore</MenuItem>
+                    <MenuItem value="India">India</MenuItem>
                 </Select>
                 {/* Button to clear filters */}
                 <Button variant="outlined" sx={{mb: 2, marginRight: '10px', backgroundColor: '#3073d1', color: 'white'}}

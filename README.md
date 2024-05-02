@@ -1,46 +1,70 @@
-# Getting Started with Create React App
+Running the React Frontend Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+To run the React frontend application, follow these steps:
 
-## Available Scripts
+    Clone the Project:
+    Clone the project repository using one of the following methods:
+        Unzip the attachment provided.
+        Or clone the Git repository from the URL: https://github.com/RamakrishnaMB/weather-app.git.
 
-In the project directory, you can run:
+    Verify Node.js Installation:
+    Before running the React app, ensure that Node.js is installed on your system. You can verify the installation by running the following commands in your terminal or command prompt:
 
-### `npm start`
+    node -v
+    npm -v
+    
+    Copy Data from Backend Console Application:
+    As per the requirements specified in the assessment document, the React app must load data from the backend console
+    application. Therefore, before running the React app, ensure that country-wise JSON files generated in the backend
+    console application (located at bin\Debug\net8.0\weatherforecastdata) are copied to the public folder of the React
+    project (path: weather-app\public\weatherdata).
+    Note: If these files are not copied before running the application, no data will be displayed.
+    
+    Install Dependencies:
+    Once the project is cloned successfully, navigate to the project's root directory (e.g., D:\weather-app) in your
+    terminal or command prompt. Then, run the following command to install project dependencies:
+    
+    npm install
+    
+    Run the Project:
+    After installing the dependencies, use the following command to run the project:
+    
+    npm start
+    
+    Access the Application:
+    Open your web browser and navigate to the URL http://localhost:3000/ to access the React application.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Docker Setup Instructions for FE
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+To run the React frontend application using Docker, follow these steps:
 
-### `npm test`
+    Navigate to React App Root Directory:
+    Go to the root folder of the React app where the Dockerfile is located and open it in the terminal.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+    Build Docker Image:
+    Run the following command in the terminal to build the Docker image:
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+    docker build . -t react-weather-app
+    
+    This command will build the Docker image named react-weather-app based on the Dockerfile.
+    
+    Run Docker Container:
+    Once the Docker build process is successfully completed, execute the following command to run the application in a Docker container:
+    
+    arduino
+    
+    docker run -d -p 3000:3000 react-weather-app
+    
+    This command will run the Docker container in detached mode (-d) and map port 3000 of the host to port 3000 of the container, allowing access to the React application.
+    
+    View Application Logs:
+    To view the localhost URL for the application, run the following command:
+    
+    css
+    
+    docker logs [container_id]
+    
+    Replace [container_id] with the actual ID of the Docker container. This command will display the logs, which typically include the localhost URL for accessing the application.
+    
+    Access the Application:
+    Use the URL http://localhost:3000/ to open the app in the browser.
