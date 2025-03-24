@@ -37,7 +37,7 @@ interface WeatherData {
 }
 
 // WeatherComponent functional component
-const WeatherComponent: React.FC = () => {
+export const WeatherComponent: React.FC = () => {
     // State variables to manage data and filters
     const [data, setData] = useState<{ date: string; countries: { country: string; data: WeatherData }[] }[]>([]);
     const [filterDate, setFilterDate] = useState<string>('');
@@ -225,4 +225,4 @@ const WeatherComponent: React.FC = () => {
     );
 };
 
-export default WeatherComponent;
+
